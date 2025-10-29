@@ -18,5 +18,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         tools:listitem="@layout/fragment_repoitem"
         />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
