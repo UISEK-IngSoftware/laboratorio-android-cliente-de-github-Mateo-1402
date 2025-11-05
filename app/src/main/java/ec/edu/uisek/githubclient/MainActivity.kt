@@ -1,9 +1,9 @@
 package ec.edu.uisek.githubclient
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
 import ec.edu.uisek.githubclient.databinding.ActivityMainBinding
 import ec.edu.uisek.githubclient.models.Repo
 import ec.edu.uisek.githubclient.services.GithubApiService
@@ -23,6 +23,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupRecyclerView()
+        binding.newRepoFab.setOnClickListener {
+            displayNewRepoForm()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
         fetchRepositories()
     }
 
@@ -45,12 +52,13 @@ class MainActivity : AppCompatActivity() {
                         showMessage("No se encontraron repositorios")
                     }
                 } else {
-                    val errorMessage = when(response.code()) {
-                        401 -> "No autorizado"
+                    val errorMessage = when (response.code()) {
+                        401 -> "No Autorizado"
                         403 -> "Prohibido"
-                        404 -> "No encontrado"
+                        404 -> "No Encontrado"
                         else -> "Error ${response.code()}"
                     }
+                    showMessage ("Error: $errorMessage")
                 }
             }
 
@@ -63,4 +71,8 @@ class MainActivity : AppCompatActivity() {
     private fun showMessage (message: String) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
+    private fun displayNewRepoForm() {
+        Intent(this, RepoForm::class.java).apply {
+            startActivity(this)
+        }   }
 }
