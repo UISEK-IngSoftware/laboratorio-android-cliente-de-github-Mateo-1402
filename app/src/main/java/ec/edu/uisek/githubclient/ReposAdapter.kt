@@ -7,18 +7,13 @@ import com.bumptech.glide.Glide
 import ec.edu.uisek.githubclient.databinding.FragmentRepoitemBinding
 import ec.edu.uisek.githubclient.models.Repo
 
-/**
- * Es el "cerebro" que se encarga de dibujar cada repositorio en la lista. 
- * Sabe qué datos poner y cómo reaccionar cuando se pulsa un botón. 
- */
+/** Dibuja cada repositorio en la lista y maneja los clics en los botones. */
 class ReposViewHolder(
     private val binding: FragmentRepoitemBinding,
     private val listener: RepoActionListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    /**
-     * Rellena la vista de un item de la lista con los datos de un repositorio. 
-     */
+    /** Rellena la vista con los datos de un repositorio. */
     fun bind(repo: Repo) {
         binding.repoName.text = repo.name
         binding.repoDescription.text = repo.description
@@ -30,7 +25,7 @@ class ReposViewHolder(
             .circleCrop()
             .into(binding.repoOwnerImage)
 
-        // Le decimos qué hacer cuando se pulsan los botones de editar o eliminar. 
+        // Define la acción de los botones de editar y eliminar.
         binding.editButton.setOnClickListener {
             listener.onEditClick(repo)
         }
@@ -40,18 +35,15 @@ class ReposViewHolder(
     }
 }
 
-/**
- * El adaptador es el gestor general de la lista. 
- * Conecta los datos (la lista de repos) con el RecyclerView que los muestra. 
- */
+/** Adaptador que gestiona la lista de repositorios en el RecyclerView. */
 class ReposAdapter(private val listener: RepoActionListener) : RecyclerView.Adapter<ReposViewHolder>() {
-    // Aquí guardamos la lista de repositorios que se está mostrando. 
+    // Lista de repositorios que se está mostrando.
     private var repositories: MutableList<Repo> = mutableListOf()
 
-    // Devuelve cuántos items hay en la lista. 
+    // Devuelve el número total de items en la lista.
     override fun getItemCount(): Int = repositories.size
 
-    // Crea una nueva "cajita" (ViewHolder) para un repositorio. 
+    // Crea un nuevo ViewHolder (una "caja") para un item de la lista.
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReposViewHolder {
         val binding = FragmentRepoitemBinding.inflate(
             LayoutInflater.from(parent.context),
@@ -61,22 +53,18 @@ class ReposAdapter(private val listener: RepoActionListener) : RecyclerView.Adap
         return ReposViewHolder(binding, listener)
     }
 
-    // Conecta los datos de un repositorio con una "cajita" que ya existe. 
+    // Asocia los datos de un repositorio con un ViewHolder existente.
     override fun onBindViewHolder(holder: ReposViewHolder, position: Int) {
         holder.bind(repositories[position])
     }
 
-    /**
-     * Actualiza la lista completa de repositorios y le dice al RecyclerView que se redibuje. 
-     */
+    /** Actualiza la lista completa de repositorios. */
     fun updateRepositories(newRepositories: List<Repo>) {
         repositories = newRepositories.toMutableList()
         notifyDataSetChanged()
     }
 
-    /**
-     * Elimina un solo repositorio de la lista y notifica al RecyclerView para que lo quite. 
-     */
+    /** Elimina un repositorio de la lista. */
     fun removeRepo(repo: Repo) {
         val position = repositories.indexOfFirst { it.id == repo.id }
         if (position > -1) {
