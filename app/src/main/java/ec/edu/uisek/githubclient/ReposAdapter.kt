@@ -7,8 +7,11 @@ import com.bumptech.glide.Glide
 import ec.edu.uisek.githubclient.databinding.FragmentRepoitemBinding
 import ec.edu.uisek.githubclient.models.Repo
 
-class ReposViewHolder(private val binding: FragmentRepoitemBinding) :
-    RecyclerView.ViewHolder(binding.root) {
+class ReposViewHolder(
+    private val binding: FragmentRepoitemBinding,
+    private val listener: RepoActionListener
+) : RecyclerView.ViewHolder(binding.root) {
+
     fun bind(repo: Repo) {
         binding.repoName.text = repo.name
         binding.repoDescription.text = repo.description
@@ -19,28 +22,45 @@ class ReposViewHolder(private val binding: FragmentRepoitemBinding) :
             .error(R.mipmap.ic_launcher)
             .circleCrop()
             .into(binding.repoOwnerImage)
+
+        // Set listeners for edit and delete actions
+        binding.editButton.setOnClickListener {
+            listener.onEditClick(repo)
+        }
+        binding.deleteButton.setOnClickListener {
+            listener.onDeleteClick(repo)
+        }
     }
 }
 
-class ReposAdapter: RecyclerView.Adapter<ReposViewHolder>() {
-    private var repositories : List<Repo> = emptyList()
+class ReposAdapter(private val listener: RepoActionListener) : RecyclerView.Adapter<ReposViewHolder>() {
+    private var repositories: MutableList<Repo> = mutableListOf()
+
     override fun getItemCount(): Int = repositories.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReposViewHolder {
-        var binding = FragmentRepoitemBinding.inflate(
+        val binding = FragmentRepoitemBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
         )
-        return ReposViewHolder(binding)
+        return ReposViewHolder(binding, listener)
     }
 
     override fun onBindViewHolder(holder: ReposViewHolder, position: Int) {
         holder.bind(repositories[position])
     }
-    fun updateRepositories(newRepositories: List<Repo>) {
-        repositories = newRepositories
-        notifyDataSetChanged()
 
+    fun updateRepositories(newRepositories: List<Repo>) {
+        repositories = newRepositories.toMutableList()
+        notifyDataSetChanged()
+    }
+
+    fun removeRepo(repo: Repo) {
+        val position = repositories.indexOfFirst { it.id == repo.id }
+        if (position > -1) {
+            repositories.removeAt(position)
+            notifyItemRemoved(position)
+        }
     }
 }

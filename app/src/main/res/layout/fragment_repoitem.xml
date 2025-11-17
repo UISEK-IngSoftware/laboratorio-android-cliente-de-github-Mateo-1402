@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context=".Repoitem">
@@ -9,21 +10,46 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="16dp"
-        >
-        <ImageView
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_marginEnd="16dp"> <ImageView
             android:id="@+id/repo_owner_image"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:src="@drawable/ic_launcher_foreground"
             android:layout_gravity="center"
-            />
-        <!--//LAYOUT DEL NOMBRE-->
-        <LinearLayout
-            android:layout_width="match_parent"
+            android:contentDescription="Imagen del dueño"
+            android:layout_marginBottom="8dp"/> <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            >
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/edit_button"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:contentDescription="Editar"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:srcCompat="@drawable/ic_edit_24" /> <ImageButton
+            android:id="@+id/delete_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:contentDescription="Eliminar"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:srcCompat="@drawable/ic_delete_24" /> </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -44,7 +70,6 @@
                     />
             </LinearLayout>
 
-            <!--//LAYOUT DE LA DESCRIPCION-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -63,10 +88,8 @@
                     android:text="@string/test_text"
                     android:padding="8dp"
                     />
-
             </LinearLayout>
 
-            <!--//LAYOUT DEL LENGUAJE-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -85,9 +108,7 @@
                     android:text="@string/test_lang"
                     android:padding="8dp"
                     />
-
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-
 </FrameLayout>

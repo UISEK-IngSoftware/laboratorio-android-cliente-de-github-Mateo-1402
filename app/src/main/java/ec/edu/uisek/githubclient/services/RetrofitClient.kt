@@ -9,32 +9,35 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 /**
- * Objeto singleton que configura y proporciona la instancia de Retrofit
- * para conectarse a la API de GitHub
+ * Se encarga de crear y configurar Retrofit para que podamos
+ * hablar con la API de GitHub de forma sencilla.
  */
 object RetrofitClient {
 
     private const val TAG = "RetrofitClient"
 
-    // URL base de la API de GitHub
+    // La dirección base de la API de GitHub
     private const val BASE_URL = "https://api.github.com/"
 
     /**
-     * Interceptor que agrega el token de autenticación a todas las peticiones
+     * Este interceptor es como un guardián que añade nuestro token de acceso
+     * a cada petición para que GitHub sepa quiénes somos.
      */
     private val authInterceptor = Interceptor { chain ->
         val originalRequest = chain.request()
+
+        // Leemos el token que guardamos de forma segura
         val token = BuildConfig.GITHUB_API_TOKEN
 
-        // Si el token está configurado, agregarlo al header Authorization
+        // Si tenemos un token, lo añadimos a la cabecera de la petición
         val newRequest = if (token.isNotEmpty()) {
             originalRequest.newBuilder()
                 .addHeader("Authorization", "token $token")
                 .addHeader("Accept", "application/vnd.github.v3+json")
                 .build()
         } else {
-            // Sin token, solo agregar el header Accept
-            Log.w(TAG, "⚠️ Token de GitHub NO configurado")
+            // Si no hay token, solo avisamos en el log
+            Log.w(TAG, "⚠️ No hay un token de GitHub configurado.")
             originalRequest.newBuilder()
                 .addHeader("Accept", "application/vnd.github.v3+json")
                 .build()
@@ -44,8 +47,9 @@ object RetrofitClient {
     }
 
     /**
-     * Interceptor de logging para ver las peticiones y respuestas en el log
-     * Solo activo en modo DEBUG con nivel BASIC (resumen de peticiones)
+     * Este es un interceptor "chismoso" que nos muestra en el Logcat
+     * un resumen de las peticiones que hacemos y las respuestas que recibimos.
+     * Es muy útil para depurar, así que solo lo activamos en modo DEBUG.
      */
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = if (BuildConfig.DEBUG) {
@@ -56,7 +60,8 @@ object RetrofitClient {
     }
 
     /**
-     * Cliente HTTP configurado con los interceptors necesarios
+     * Aquí creamos el cliente HTTP que usará Retrofit.
+     * Le añadimos nuestros interceptores para la autenticación y el log.
      */
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(authInterceptor)
@@ -64,8 +69,8 @@ object RetrofitClient {
         .build()
 
     /**
-     * Instancia de Retrofit configurada con la URL base, el cliente HTTP
-     * y el convertidor Gson para serializar/deserializar JSON
+     * Creamos la instancia principal de Retrofit. Le decimos la URL base,
+     * el cliente HTTP que debe usar y cómo convertir el JSON a nuestras clases.
      */
     private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
@@ -76,8 +81,8 @@ object RetrofitClient {
     }
 
     /**
-     * Instancia del servicio de la API de GitHub
-     * Se crea de forma lazy (solo cuando se necesita por primera vez)
+     * Esta es la pieza final: el servicio que usaremos en la app para
+     * hacer las llamadas a la API de GitHub de forma sencilla.
      */
     val gitHubApiService: GithubApiService by lazy {
         retrofit.create(GithubApiService::class.java)
