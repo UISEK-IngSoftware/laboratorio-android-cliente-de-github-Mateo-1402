@@ -12,14 +12,14 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 /**
- * Define las diferentes llamadas a la API de GitHub que nuestra app puede hacer.
- * Es como un menú de las acciones que podemos realizar.
+ * Define las diferentes llamadas a la API de GitHub que nuestra app puede hacer. 
+ * Es como un menú de las acciones que podemos realizar. 
  */
 interface GithubApiService {
 
     /**
-     * Pide a GitHub la lista de repositorios de un usuario.
-     * Los ordena por fecha de creación, del más nuevo al más antiguo.
+     * Pide a GitHub la lista de repositorios de un usuario. 
+     * Los ordena por fecha de creación, del más nuevo al más antiguo. 
      */
     @GET("/users/{owner}/repos")
     fun getRepos(
@@ -29,7 +29,7 @@ interface GithubApiService {
     ): Call<List<Repo>>
 
     /**
-     * Envía una petición para crear un nuevo repositorio.
+     * Envía una petición para crear un nuevo repositorio. 
      */
     @POST("/user/repos")
     fun addRepo(
@@ -37,7 +37,7 @@ interface GithubApiService {
     ): Call<Repo>
 
     /**
-     * Envía los datos para actualizar un repositorio que ya existe.
+     * Envía los datos para actualizar un repositorio que ya existe. 
      */
     @PATCH("/repos/{owner}/{repo_name}")
     fun updateRepo(
@@ -47,8 +47,8 @@ interface GithubApiService {
     ): Call<Repo>
 
     /**
-     * Envía una orden para eliminar un repositorio.
-     * No esperamos recibir datos de vuelta, solo saber si se completó.
+     * Envía una orden para eliminar un repositorio. 
+     * No esperamos recibir datos de vuelta, solo saber si se completó. 
      */
     @DELETE("/repos/{owner}/{repo_name}")
     fun deleteRepo(
