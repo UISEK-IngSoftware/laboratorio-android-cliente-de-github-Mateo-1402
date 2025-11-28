@@ -38,7 +38,14 @@ class MainActivity : AppCompatActivity(), RepoActionListener {
         setContentView(binding.root)
 
         // Prepara el servicio de la API
-        apiService = RetrofitClient.gitHubApiService
+        try {
+            apiService = RetrofitClient.getApiService()
+        } catch (e: Exception) {
+            Toast.makeText(this, "Error: Sesión no inicializada", Toast.LENGTH_LONG).show()
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+            return
+        }
 
         setupRecyclerView()
 
@@ -51,7 +58,9 @@ class MainActivity : AppCompatActivity(), RepoActionListener {
     override fun onResume() {
         super.onResume()
         // Actualiza la lista de repositorios al volver a la pantalla
-        fetchRepositories()
+        if (::apiService.isInitialized) {
+            fetchRepositories()
+        }
     }
 
     /** Configura el RecyclerView. */
@@ -65,6 +74,8 @@ class MainActivity : AppCompatActivity(), RepoActionListener {
 
     /** Obtiene y muestra la lista de repositorios desde la API. */
     private fun fetchRepositories() {
+        if (!::apiService.isInitialized) return
+        
         val call = apiService.getRepos(RepoForm.GITHUB_OWNER)
 
         call.enqueue(object: Callback<List<Repo>> {
@@ -128,6 +139,8 @@ class MainActivity : AppCompatActivity(), RepoActionListener {
 
     /** Llama a la API para eliminar el repositorio. */
     private fun executeDeleteRepo(repo: Repo) {
+        if (!::apiService.isInitialized) return
+
         apiService.deleteRepo(RepoForm.GITHUB_OWNER, repo.name).enqueue(object : Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {

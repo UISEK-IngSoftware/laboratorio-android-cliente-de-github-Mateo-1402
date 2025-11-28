@@ -11,7 +11,7 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-/** Define las llamadas a la API de GitHub. */
+/** Define las llamadas a la API. */
 interface GithubApiService {
 
     /** Obtiene la lista de repositorios de un usuario. */

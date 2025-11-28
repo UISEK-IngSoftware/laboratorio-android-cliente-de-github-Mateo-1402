@@ -43,7 +43,7 @@ class ReposAdapter(private val listener: RepoActionListener) : RecyclerView.Adap
     // Devuelve el número total de items en la lista.
     override fun getItemCount(): Int = repositories.size
 
-    // Crea un nuevo ViewHolder (una "caja") para un item de la lista.
+    // Crea un nuevo ViewHolder para un item de la lista.
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReposViewHolder {
         val binding = FragmentRepoitemBinding.inflate(
             LayoutInflater.from(parent.context),

@@ -79,25 +79,29 @@ class RepoForm : AppCompatActivity() {
             binding.repoDescriptionInput.text.toString().trim()
         )
 
-        RetrofitClient.gitHubApiService.addRepo(repoRequest).enqueue(object : Callback<Repo> {
-            override fun onResponse(call: Call<Repo>, response: Response<Repo>) {
-                if (response.isSuccessful) {
-                    showMessage("Repositorio creado con éxito.")
-                    setResult(Activity.RESULT_OK) // Avisa que la operación fue exitosa.
-                    finish()
-                } else {
-                    val errorMessage = when (response.code()) {
-                        422 -> "El repositorio ya existe o el nombre no es válido."
-                        else -> "Error al crear el repositorio: ${response.code()}"
+        try {
+            RetrofitClient.getApiService().addRepo(repoRequest).enqueue(object : Callback<Repo> {
+                override fun onResponse(call: Call<Repo>, response: Response<Repo>) {
+                    if (response.isSuccessful) {
+                        showMessage("Repositorio creado con éxito.")
+                        setResult(Activity.RESULT_OK) // Avisa que la operación fue exitosa.
+                        finish()
+                    } else {
+                        val errorMessage = when (response.code()) {
+                            422 -> "El repositorio ya existe o el nombre no es válido."
+                            else -> "Error al crear el repositorio: ${response.code()}"
+                        }
+                        showMessage(errorMessage)
                     }
-                    showMessage(errorMessage)
                 }
-            }
 
-            override fun onFailure(call: Call<Repo>, t: Throwable) {
-                showMessage("Error de red: ${t.message}")
-            }
-        })
+                override fun onFailure(call: Call<Repo>, t: Throwable) {
+                    showMessage("Error de red: ${t.message}")
+                }
+            })
+        } catch (e: Exception) {
+            showMessage("Error: ${e.message}")
+        }
     }
 
     /** Envía la petición para actualizar el repositorio. */
@@ -107,23 +111,27 @@ class RepoForm : AppCompatActivity() {
             binding.repoDescriptionInput.text.toString().trim()
         )
 
-        repoName?.let {
-            RetrofitClient.gitHubApiService.updateRepo(GITHUB_OWNER, it, updatedRepo)
-                .enqueue(object : Callback<Repo> {
-                    override fun onResponse(call: Call<Repo>, response: Response<Repo>) {
-                        if (response.isSuccessful) {
-                            showMessage("Repositorio actualizado.")
-                            setResult(Activity.RESULT_OK) // Avisa que la operación fue exitosa.
-                            finish()
-                        } else {
-                            showMessage("Error al actualizar: ${response.code()}")
+        repoName?.let { name ->
+            try {
+                RetrofitClient.getApiService().updateRepo(GITHUB_OWNER, name, updatedRepo)
+                    .enqueue(object : Callback<Repo> {
+                        override fun onResponse(call: Call<Repo>, response: Response<Repo>) {
+                            if (response.isSuccessful) {
+                                showMessage("Repositorio actualizado.")
+                                setResult(Activity.RESULT_OK) // Avisa que la operación fue exitosa.
+                                finish()
+                            } else {
+                                showMessage("Error al actualizar: ${response.code()}")
+                            }
                         }
-                    }
 
-                    override fun onFailure(call: Call<Repo>, t: Throwable) {
-                        showMessage("Error de red: ${t.message}")
-                    }
-                })
+                        override fun onFailure(call: Call<Repo>, t: Throwable) {
+                            showMessage("Error de red: ${t.message}")
+                        }
+                    })
+            } catch (e: Exception) {
+                showMessage("Error: ${e.message}")
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("kotlin-parcelize")
 }
 
 android {
@@ -15,21 +16,22 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        /*
+                val envFile = rootProject.file(".env")
+                val githubToken = if (envFile.exists()) {
+                    envFile.readLines()
+                        .firstOrNull { it.startsWith("GITHUB_API_TOKEN=") }
+                        ?.substringAfter("GITHUB_API_TOKEN=")
+                        ?.trim()
+                        ?: ""
+                } else {
+                    ""
+                }
 
-        // Configurar la variable de entorno desde .env
-        val envFile = rootProject.file(".env")
-        val githubToken = if (envFile.exists()) {
-            envFile.readLines()
-                .firstOrNull { it.trim().startsWith("GITHUB_API_TOKEN=") }
-                ?.substringAfter("GITHUB_API_TOKEN=")
-                ?.trim()
-                ?: ""
-        } else {
-            ""
-        }
-
-        buildConfigField("String", "GITHUB_API_TOKEN", "\"$githubToken\"")
+                buildConfigField("String", "GITHUB_API_TOKEN", "\"$githubToken\"")
+            */
     }
+
 
     buildTypes {
         release {
@@ -72,4 +74,7 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 // Glide para cargar imágenes desde URLs
     implementation("com.github.bumptech.glide:glide:4.16.0")
+
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
+
 }
