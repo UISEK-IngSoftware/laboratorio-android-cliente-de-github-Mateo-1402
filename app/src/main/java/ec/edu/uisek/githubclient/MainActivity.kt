@@ -12,6 +12,7 @@ import ec.edu.uisek.githubclient.databinding.ActivityMainBinding
 import ec.edu.uisek.githubclient.models.Repo
 import ec.edu.uisek.githubclient.services.GithubApiService
 import ec.edu.uisek.githubclient.services.RetrofitClient
+import ec.edu.uisek.githubclient.services.SessionManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -53,6 +54,11 @@ class MainActivity : AppCompatActivity(), RepoActionListener {
         binding.newRepoFab.setOnClickListener {
             displayNewRepoForm()
         }
+
+        // Configura el botón de logout
+        binding.logoutFab.setOnClickListener {
+            performLogout()
+        }
     }
 
     override fun onResume() {
@@ -70,6 +76,25 @@ class MainActivity : AppCompatActivity(), RepoActionListener {
             adapter = reposAdapter
             layoutManager = LinearLayoutManager(this@MainActivity)
         }
+    }
+
+    private fun performLogout() {
+        AlertDialog.Builder(this)
+            .setTitle("Cerrar Sesión")
+            .setMessage("¿Estás seguro de que quieres salir?")
+            .setPositiveButton("Salir") { _, _ ->
+                // Limpiar credenciales (opcional, depende de tu implementación de SessionManager)
+                 val sessionManager = SessionManager(this)
+                 sessionManager.saveCredentials("", "") // O crear un método clearCredentials()
+
+                // Volver al LoginActivity
+                val intent = Intent(this, LoginActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+                finish()
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
     }
 
     /** Obtiene y muestra la lista de repositorios desde la API. */
